@@ -1,0 +1,189 @@
+/* style.css — the Monarch look: warm linen notebook under morning light.
+   One chromatic accent (Ember Orange) rationed hard; everything else is
+   warm monochrome, hairline rules and editorial serif headings. */
+
+:root {
+  --linen: #efecea;
+  --paper: #ffffff;
+  --ink: #22201d;
+  --graphite: #777573;
+  --stone: #dcd9d6;
+  --ember: #ff692d;
+  --ember-soft: #fff1ea;
+  --warn: #a44a28;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--linen);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+}
+h1, h2, h3, .serif { font-family: var(--serif); letter-spacing: -0.03em; }
+h1 { font-size: 34px; line-height: 1.15; margin: 0 0 4px; font-weight: 600; }
+h2 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+h3 { font-size: 17px; margin: 0 0 6px; font-weight: 600; }
+p { margin: 0 0 12px; }
+a { color: var(--ink); }
+.muted { color: var(--graphite); }
+.small { font-size: 13px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---- Shell ---- */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px 64px; }
+.topbar {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding: 22px 0 14px; border-bottom: 1px solid var(--stone);
+}
+.brand { font-family: var(--serif); font-size: 24px; font-weight: 700; letter-spacing: -0.04em; }
+.brand em { font-style: normal; color: var(--ember); }
+.topbar .household { color: var(--graphite); font-size: 13px; }
+nav.main { display: flex; gap: 4px; flex-wrap: wrap; padding: 12px 0 0; }
+nav.main a {
+  text-decoration: none; font-size: 14px; color: var(--graphite);
+  padding: 8px 14px; border-radius: 9999px;
+}
+nav.main a:hover { color: var(--ink); background: #e7e2dd; }
+nav.main a.active { background: var(--ember); color: #fff; }
+nav.main a.active:hover { color: #fff; }
+
+/* ---- Layout ---- */
+.page-head { padding: 20px 0 16px; }
+.page-head p { color: var(--graphite); margin: 0; max-width: 640px; }
+.grid { display: grid; gap: 16px; }
+.cols-2 { grid-template-columns: 1fr 1fr; }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cols-32 { grid-template-columns: 1.6fr 1fr; }
+.cols-23 { grid-template-columns: 1fr 1.6fr; }
+.card {
+  background: var(--paper);
+  border: 1px solid var(--stone);
+  border-radius: 12px;
+  padding: 24px;
+}
+.card h2 { margin-bottom: 2px; }
+.card .sub { color: var(--graphite); font-size: 13px; margin-bottom: 16px; }
+.hero {
+  background: var(--paper); border: 1px solid var(--stone); border-radius: 12px;
+  padding: 20px 28px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 24px;
+}
+.hero .big { font-family: var(--serif); font-size: 36px; letter-spacing: -0.04em; line-height: 1.1; }
+.hero .big.ember { color: var(--ember); }
+.hero .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--graphite); margin-bottom: 6px; }
+.hero .note { font-size: 13px; color: var(--graphite); margin-top: 6px; }
+.rule { border: 0; border-top: 1px solid var(--stone); margin: 20px 0; }
+
+/* ---- Bars, donuts, lists ---- */
+.bar-track { background: #ece8e3; border-radius: 9999px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 9999px; background: var(--ink); }
+.bar-fill.over { background: var(--warn); }
+.bar-fill.ember { background: var(--ember); }
+.budget-row { padding: 12px 0; border-top: 1px solid var(--stone); }
+.budget-row:first-of-type { border-top: 0; }
+.budget-row .row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.budget-row .pct { color: var(--graphite); font-size: 13px; }
+.over-tag { color: var(--warn); font-size: 12px; font-weight: 600; }
+.under-tag { color: var(--graphite); font-size: 12px; }
+table.tx { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.tx th {
+  text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--graphite); font-weight: 600; padding: 8px 8px 8px 0;
+  border-bottom: 1px solid var(--stone);
+}
+table.tx td { padding: 11px 8px 11px 0; border-bottom: 1px solid #efebe7; vertical-align: top; }
+table.tx tr:last-child td { border-bottom: 0; }
+table.tx .amt { text-align: right; white-space: nowrap; }
+.amt-in { color: var(--ink); }
+.amt-out { color: var(--ink); }
+.cat-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.bill-row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--stone); }
+.bill-row:first-of-type { border-top: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--graphite); margin-top: 12px; }
+.legend span { white-space: nowrap; }
+
+/* ---- Forms & controls ---- */
+label { display: block; font-size: 13px; color: var(--graphite); margin-bottom: 4px; }
+input[type="text"], input[type="number"], input[type="date"], select {
+  width: 100%; padding: 10px 12px; font: inherit; font-size: 14px; color: var(--ink);
+  background: #fff; border: 1px solid var(--stone); border-radius: 8px;
+}
+input:focus, select:focus { outline: 2px solid var(--ember); outline-offset: 0; border-color: var(--ember); }
+button {
+  font: inherit; font-size: 14px; cursor: pointer;
+  border-radius: 9999px; padding: 10px 20px; border: 1px solid var(--ink);
+  background: var(--ink); color: #fff;
+}
+button:hover { background: #3a3631; }
+button.primary { background: var(--ember); border-color: var(--ember); }
+button.primary:hover { background: #f25a1d; }
+button.ghost { background: transparent; color: var(--ink); }
+button.small { padding: 6px 14px; font-size: 13px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+.toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+.toolbar .field { flex: 1 1 160px; min-width: 140px; }
+.toolbar .field.search { flex: 2 1 220px; }
+.hint { font-size: 13px; color: var(--graphite); }
+.ok { color: var(--ink); background: var(--ember-soft); border: 1px solid #f6cdbb; border-radius: 8px; padding: 10px 14px; font-size: 14px; margin-top: 12px; }
+.goal-amount { font-family: var(--serif); font-size: 26px; letter-spacing: -0.02em; }
+.kpi { font-family: var(--serif); font-size: 30px; letter-spacing: -0.03em; line-height: 1.15; }
+.insight { padding: 12px 0; border-top: 1px solid var(--stone); }
+.insight:first-of-type { border-top: 0; }
+.insight b { font-weight: 600; }
+footer.site { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--stone); color: var(--graphite); font-size: 13px; }
+
+/* ---- Phone ---- */
+@media (max-width: 760px) {
+  .wrap { padding: 0 16px 48px; }
+  h1 { font-size: 28px; }
+  .hero { grid-template-columns: 1fr 1fr; padding: 20px; gap: 18px; }
+  .hero .big { font-size: 26px; }
+  .cols-2, .cols-3, .cols-32, .cols-23 { grid-template-columns: 1fr; }
+  .card { padding: 20px; }
+  nav.main { gap: 2px; }
+  nav.main a { padding: 8px 10px; font-size: 13px; }
+  .form-grid { grid-template-columns: 1fr; }
+  table.tx .hide-phone { display: none; }
+}
+
+/* ---- Dashboard cover density (desktop only) ----
+   Tightens the dashboard's vertical rhythm so the cover frame (1280x800)
+   reaches the recent-transactions card. Dashboard only: every rule is
+   scoped to body[data-page="/"], so the other four pages are untouched.
+   No figures, categories or text are removed; the budget rows keep every
+   number, with the "spent of budget" figures sitting beside their bar
+   instead of on a line of their own. */
+body[data-page="/"] .budget-row .bar-line {
+  display: flex; align-items: center; gap: 12px; margin-top: 6px;
+}
+body[data-page="/"] .budget-row .bar-line .bar-track { flex: 1; }
+body[data-page="/"] .budget-row .bar-line .fig { white-space: nowrap; }
+
+@media (min-width: 761px) {
+  body[data-page="/"] .topbar { padding: 12px 0 8px; }
+  body[data-page="/"] .brand { font-size: 22px; }
+  body[data-page="/"] nav.main { padding-top: 8px; }
+  body[data-page="/"] nav.main a { padding: 7px 13px; }
+  body[data-page="/"] .page-head { padding: 12px 0 10px; }
+  body[data-page="/"] .page-head h1 { font-size: 28px; }
+  body[data-page="/"] .page-head p { max-width: none; }
+  body[data-page="/"] .hero { padding: 14px 24px; }
+  body[data-page="/"] .hero .big { font-size: 30px; }
+  body[data-page="/"] .hero .label { margin-bottom: 4px; }
+  body[data-page="/"] .hero .note { margin-top: 3px; }
+  body[data-page="/"] .grid { gap: 10px; }
+  body[data-page="/"] .card { padding: 16px 20px; }
+  body[data-page="/"] .card h2 { line-height: 1.2; }
+  body[data-page="/"] .card .sub { margin-bottom: 8px; }
+  body[data-page="/"] .budget-row { padding: 7px 0; }
+  body[data-page="/"] .budget-row .bar-line { margin-top: 4px; }
+  body[data-page="/"] .bill-row { padding: 8px 0; }
+  body[data-page="/"] table.tx td { padding: 8px 8px 8px 0; }
+}
