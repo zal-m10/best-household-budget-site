@@ -89,7 +89,6 @@ nav.main a.active:hover { color: #fff; }
 /* ---- Bars, donuts, lists ---- */
 .bar-track { background: #ece8e3; border-radius: 9999px; height: 8px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 9999px; background: var(--ink); }
-.bar-fill.over { background: var(--warn); }
 .bar-fill.ember { background: var(--ember); }
 .budget-row { padding: 12px 0; border-top: 1px solid var(--stone); }
 .budget-row:first-of-type { border-top: 0; }

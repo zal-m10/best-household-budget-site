@@ -87,7 +87,7 @@ export function renderDashboard(state) {
       ${topBudgets.map((r) => {
         const pct = Math.round((r.actual / r.budget) * 100);
         return `<div class="budget-row"><div class="row-top"><span><span class="cat-dot" style="background:${r.color}"></span>${r.name}</span><span class="pct">${pct}%</span></div>
-        <div class="bar-line"><div class="bar-track"><div class="bar-fill ${r.actual > r.budget ? "over" : ""}" style="width:${Math.min(100, pct)}%"></div></div>
+        <div class="bar-line"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, pct)}%;background:${r.color}"></div></div>
         <span class="small muted fig">${fmt(r.actual)} of ${fmt(r.budget)}</span></div></div>`;
       }).join("")}
       <p class="small" style="margin-top:12px"><a href="#/budget">Open the full budget →</a></p>
