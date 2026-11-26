@@ -40,7 +40,7 @@ export function budgetBars(rows) {
       <span class="num">${fmt(r.actual)} <span class="muted">of ${fmt(r.budget)}</span></span></div>
       <div style="position:relative;margin-top:8px">
         <div class="bar-track" style="position:relative">
-          <div class="bar-fill ${over ? "over" : ""}" style="width:${width}%"></div>
+          <div class="bar-fill" style="width:${width}%;background:${r.color}"></div>
           <div style="position:absolute;top:-3px;left:${budgetWidth}%;width:2px;height:14px;background:#22201d"></div>
         </div>
       </div>

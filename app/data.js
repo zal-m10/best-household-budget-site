@@ -29,18 +29,20 @@ export const DATA = {
     { name: "GoPay wallet", balance: 1000000 },
   ],
 
-  // Budget per category for November. Colours stay warm monochrome; only
-  // Dining Out takes the Ember accent, as the month's hero category.
+  // Budget per category for November. Each category has its own muted
+  // hue so it is easy to tell apart at a glance in the donut, the dots
+  // and the budget bars; Dining Out keeps the Ember accent, as the
+  // month's hero category. This is the single source of category colour.
   categories: [
-    { id: "groceries", name: "Groceries", budget: 2900000, color: "#8a7f72" },
+    { id: "groceries", name: "Groceries", budget: 2900000, color: "#5c7f4e" },
     { id: "dining", name: "Dining Out", budget: 850000, color: "#ff692d" },
-    { id: "transport", name: "Transport", budget: 1350000, color: "#6b655e" },
-    { id: "housing", name: "Housing", budget: 3500000, color: "#4a453f" },
-    { id: "utilities", name: "Utilities", budget: 850000, color: "#a89e90" },
-    { id: "kids", name: "Kids & School", budget: 1050000, color: "#7d7468" },
-    { id: "health", name: "Health", budget: 450000, color: "#b3a89a" },
-    { id: "entertainment", name: "Entertainment", budget: 550000, color: "#5c564e" },
-    { id: "shopping", name: "Shopping", budget: 600000, color: "#96897a" },
+    { id: "transport", name: "Transport", budget: 1350000, color: "#4a6a8c" },
+    { id: "housing", name: "Housing", budget: 3500000, color: "#7e5a82" },
+    { id: "utilities", name: "Utilities", budget: 850000, color: "#a8842c" },
+    { id: "kids", name: "Kids & School", budget: 1050000, color: "#b25e6e" },
+    { id: "health", name: "Health", budget: 450000, color: "#2f7f7a" },
+    { id: "entertainment", name: "Entertainment", budget: 550000, color: "#6a5ca6" },
+    { id: "shopping", name: "Shopping", budget: 600000, color: "#6e4a2e" },
   ],
 
   // Every transaction of November 2026, newest last. "type" is "in" for money
