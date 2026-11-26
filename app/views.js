@@ -15,12 +15,16 @@ function txRow(t) {
   const cat = categoryById(t.category);
   const dot = cat ? `<span class="cat-dot" style="background:${cat.color}"></span>${cat.name}` : "Income";
   const sign = t.type === "in" ? "+" : "−";
-  return `<tr><td class="num">${fmtDate(t.date)}</td><td><b>${esc(t.merchant)}</b><br><span class="muted small">${esc(t.note || "")}</span></td><td class="hide-phone">${dot}</td><td class="amt num">${sign} ${fmt(t.amount)}</td></tr>`;
+  const sub = [t.note, t.account].filter(Boolean).join(" · ");
+  const proof = t.receipt
+    ? `<img class="receipt-thumb" src="${t.receipt}" alt="Receipt for ${esc(t.merchant)}" title="Tap to enlarge">`
+    : `<span class="muted small">—</span>`;
+  return `<tr><td class="num">${fmtDate(t.date)}</td><td><b>${esc(t.merchant)}</b><br><span class="muted small">${esc(sub)}</span></td><td class="hide-phone">${dot}</td><td class="hide-phone">${proof}</td><td class="amt num">${sign} ${fmt(t.amount)}</td></tr>`;
 }
 
 export function txTable(txs) {
   if (txs.length === 0) return `<p class="muted">No transactions match. Try clearing the search or choosing another category.</p>`;
-  return `<table class="tx"><thead><tr><th>Date</th><th>What</th><th class="hide-phone">Category</th><th class="amt">Amount</th></tr></thead><tbody>`
+  return `<table class="tx"><thead><tr><th>Date</th><th>What</th><th class="hide-phone">Category</th><th class="hide-phone">Proof</th><th class="amt">Amount</th></tr></thead><tbody>`
     + txs.map(txRow).join("") + `</tbody></table>`;
 }
 
@@ -38,6 +42,9 @@ export function renderDashboard(state) {
   const balance = totalBalance(state.accounts);
   const salary = DATA.incomeSources[0].amount;
   const freelance = DATA.incomeSources.slice(1).reduce((s, x) => s + x.amount, 0);
+  // Income the family added by hand (not salary or freelance) shows up
+  // here too, so this line can never disagree with the Income figure.
+  const otherIncome = income - salary - freelance;
   const recent = [...state.transactions]
     .filter((t) => t.type === "out")
     .sort((a, b) => b.date.localeCompare(a.date))
@@ -56,7 +63,7 @@ export function renderDashboard(state) {
     <div><div class="label">Total balance</div><div class="big ember num">${fmt(balance)}</div>
     <div class="note">Across ${state.accounts.length} accounts, incl. savings</div></div>
     <div><div class="label">Income · Nov</div><div class="big num">${fmtJt(income)}</div>
-    <div class="note">Salary ${fmtJt(salary)} + freelance ${fmtJt(freelance)}</div></div>
+    <div class="note">Salary ${fmtJt(salary)} + freelance ${fmtJt(freelance)}${otherIncome > 0 ? " + other " + fmtJt(otherIncome) : ""}</div></div>
     <div><div class="label">Spent · Nov</div><div class="big num">${fmtJt(spent)}</div>
     <div class="note">${state.transactions.filter((t) => t.type === "out").length} purchases so far</div></div>
     <div><div class="label">Savings rate</div><div class="big num">${(rate * 100).toFixed(1)}%</div>
@@ -122,7 +129,7 @@ export function renderTransactions(state, filter) {
 
   return `
   <div class="page-head"><h1>Transactions</h1>
-  <p>Every rupiah in and out for ${esc(DATA.household.month)}. Add a purchase below and the totals, the budget bars and the charts update at once.</p></div>
+  <p>Every rupiah in and out for ${esc(DATA.household.month)}. Add a purchase or an income below — pick the wallet it comes from or goes to — and the totals, the budget bars and the charts update at once.</p></div>
 
   <section class="card">
     <div class="toolbar">
@@ -139,13 +146,30 @@ export function renderTransactions(state, filter) {
   </section>
 
   <section class="card" style="margin-top:16px"><h2>Add a transaction</h2>
-    <p class="sub">It appears in the list above and updates every total on the site.</p>
+    <p class="sub">Spending or income — it appears in the list above and updates every total on the site. Attach a photo of the receipt or payment proof if you have one; it stays on this device.</p>
     <form id="add-tx">
       <div class="form-grid">
+        <div class="full"><span class="seg-label">Type</span>
+          <div class="seg" role="radiogroup" aria-label="Transaction type">
+            <label><input type="radio" name="tx-type" value="out" checked><span>Spending</span></label>
+            <label><input type="radio" name="tx-type" value="in"><span>Income</span></label>
+          </div>
+        </div>
         <div><label for="tx-merchant">Merchant / description</label><input type="text" id="tx-merchant" required placeholder="e.g. Super Indo"></div>
         <div><label for="tx-amount">Amount (Rp)</label><input type="number" id="tx-amount" required min="1000" step="500" placeholder="150000"></div>
         <div><label for="tx-category">Category</label><select id="tx-category">${DATA.categories.map((c) => `<option value="${c.id}">${c.name}</option>`).join("")}</select></div>
+        <div><label for="tx-account">Wallet / account</label><select id="tx-account">${state.accounts.map((a, i) => `<option value="${i}">${esc(a.name)} — ${fmt(a.balance)}</option>`).join("")}</select></div>
         <div><label for="tx-date">Date</label><input type="date" id="tx-date" value="2026-11-26" min="2026-11-01" max="2026-11-30"></div>
+        <div class="full"><span class="seg-label">Receipt / payment proof (optional)</span>
+          <input type="file" id="tx-receipt-camera" accept="image/*" capture="environment" hidden>
+          <input type="file" id="tx-receipt-gallery" accept="image/*" hidden>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="ghost" id="tx-attach-camera">Camera</button>
+            <button type="button" class="ghost" id="tx-attach-gallery">Gallery</button>
+          </div>
+          <p class="hint" style="margin:8px 0 0">Camera opens the camera on a phone; Gallery opens the system picker with your photos. On a computer both open the file picker. The photo stays on this device — nothing is uploaded.</p>
+          <div id="tx-receipt-preview" class="receipt-preview" hidden></div>
+        </div>
         <div class="full"><label for="tx-note">Note (optional)</label><input type="text" id="tx-note" placeholder="What was it for?"></div>
         <div class="full"><button class="primary" type="submit">Add transaction</button>
         <span class="hint" id="tx-msg"></span></div>
@@ -181,6 +205,69 @@ export function renderBudget(state) {
         <div><label for="bd-cat">Category</label><select id="bd-cat">${DATA.categories.map((c) => `<option value="${c.id}">${c.name} — now ${fmt(state.budgets[c.id])}</option>`).join("")}</select></div>
         <div><label for="bd-amount">New monthly budget (Rp)</label><input type="number" id="bd-amount" required min="0" step="50000" value="850000"></div>
         <div class="full"><button type="submit">Save budget</button> <span class="hint" id="bd-msg"></span></div>
+      </div>
+    </form>
+  </section>`;
+}
+
+export function renderDebts(state) {
+  const open = state.debts.filter((d) => d.status === "open");
+  const owedToUs = open.filter((d) => d.direction === "piutang").reduce((s, d) => s + d.amount, 0);
+  const owedByUs = open.filter((d) => d.direction === "utang").reduce((s, d) => s + d.amount, 0);
+  const paid = state.debts.filter((d) => d.status === "paid");
+
+  const row = (d) => {
+    const typeLabel = d.direction === "utang" ? "Utang — we owe them" : "Piutang — they owe us";
+    const status = d.status === "paid"
+      ? `<b>Paid</b><br><span class="muted small">${d.settledDate ? fmtDate(d.settledDate) : ""}${d.settledAccount ? " · " + esc(d.settledAccount) : ""}</span>`
+      : `<b>Unpaid</b>`;
+    const action = d.status === "paid"
+      ? `<span class="muted small">Settled</span>`
+      : `<form class="settle-debt" data-debt="${d.id}">
+          <select name="wallet" aria-label="Wallet for settlement">${state.accounts.map((a, i) => `<option value="${i}">${esc(a.name)}</option>`).join("")}</select>
+          <button class="small" type="submit">Mark paid</button>
+        </form>`;
+    return `<tr><td><b>${esc(d.person)}</b><br><span class="muted small">${esc(d.note || "")}</span></td>`
+      + `<td class="hide-phone">${typeLabel}</td><td class="amt num">${fmt(d.amount)}</td>`
+      + `<td class="num hide-phone">${d.due ? fmtDate(d.due) : "—"}</td><td>${status}</td><td>${action}</td></tr>`;
+  };
+
+  return `
+  <div class="page-head"><h1>Debts — owed and to collect</h1>
+  <p>Money the family owes, and money owed to the family. Borrowing and lending are not income or spending — they only move a wallet balance when they are settled.</p></div>
+
+  <div class="grid cols-2" style="margin-bottom:16px">
+    <div class="card"><div class="label muted small">TOTAL PIUTANG (BELUM KEMBALI)</div><div class="kpi num">${fmt(owedToUs)}</div><div class="hint">${open.filter((d) => d.direction === "piutang").length} receivable${open.filter((d) => d.direction === "piutang").length === 1 ? "" : "s"} still out — money owed to the family</div></div>
+    <div class="card"><div class="label muted small">TOTAL UTANG (BELUM DIBAYAR)</div><div class="kpi num">${fmt(owedByUs)}</div><div class="hint">${open.filter((d) => d.direction === "utang").length} debt${open.filter((d) => d.direction === "utang").length === 1 ? "" : "s"} still to pay — money the family owes</div></div>
+  </div>
+
+  <section class="card"><h2>Outstanding</h2>
+    <p class="sub">Pick the wallet the money comes from or goes to, then mark it paid. Paying a debt takes money out of the wallet; collecting a receivable puts money into it.</p>
+    ${open.length === 0 ? `<p class="muted">Nothing outstanding — every debt is settled.</p>` : `<table class="tx"><thead><tr><th>Person</th><th class="hide-phone">Type</th><th class="amt">Amount</th><th class="hide-phone">Due</th><th>Status</th><th>Settle</th></tr></thead><tbody>${open.map(row).join("")}</tbody></table>`}
+    <p class="hint" id="debt-msg"></p>
+  </section>
+
+  ${paid.length ? `<section class="card" style="margin-top:16px"><h2>Settled</h2>
+    <p class="sub">Already paid back, for the record.</p>
+    <table class="tx"><thead><tr><th>Person</th><th class="hide-phone">Type</th><th class="amt">Amount</th><th class="hide-phone">Due</th><th>Status</th><th></th></tr></thead><tbody>${paid.map(row).join("")}</tbody></table>
+  </section>` : ""}
+
+  <section class="card" style="margin-top:16px"><h2>Add a debt</h2>
+    <p class="sub">Recording a debt moves no money and touches no total — it is a claim, not income or spending. The wallet only moves when it is settled.</p>
+    <form id="add-debt">
+      <div class="form-grid">
+        <div class="full"><span class="seg-label">Direction</span>
+          <div class="seg" role="radiogroup" aria-label="Debt direction">
+            <label><input type="radio" name="debt-dir" value="piutang" checked><span>Piutang — they owe us</span></label>
+            <label><input type="radio" name="debt-dir" value="utang"><span>Utang — we owe them</span></label>
+          </div>
+        </div>
+        <div><label for="debt-person">Person</label><input type="text" id="debt-person" required placeholder="e.g. Rina — Ibu's friend"></div>
+        <div><label for="debt-amount">Amount (Rp)</label><input type="number" id="debt-amount" required min="1000" step="1000" placeholder="500000"></div>
+        <div><label for="debt-due">Due date (optional)</label><input type="date" id="debt-due" min="2026-11-01" max="2027-06-30"></div>
+        <div><label for="debt-note">Note (optional)</label><input type="text" id="debt-note" placeholder="What was it for?"></div>
+        <div class="full"><button class="primary" type="submit">Add debt</button>
+        <span class="hint" id="debt-add-msg"></span></div>
       </div>
     </form>
   </section>`;
@@ -234,6 +321,10 @@ export function renderReports(state) {
     `<b>Biggest single purchase: ${esc(biggest.merchant)}</b> — ${fmt(biggest.amount)} on ${fmtDate(biggest.date)}. Rent is the one fixed cost; everything else is a choice.`,
   ];
 
+  const debtOpen = state.debts.filter((d) => d.status === "open");
+  const debtOwedToUs = debtOpen.filter((d) => d.direction === "piutang").reduce((s, d) => s + d.amount, 0);
+  const debtOwedByUs = debtOpen.filter((d) => d.direction === "utang").reduce((s, d) => s + d.amount, 0);
+
   return `
   <div class="page-head"><h1>Reports — six months</h1>
   <p>Income against spending from June to November 2026, and what the numbers are actually saying.</p></div>
@@ -256,6 +347,17 @@ export function renderReports(state) {
       <p class="hint" style="margin-top:12px">Housing is rent — fixed. The next four are where choices live.</p>
     </section>
   </div>
+
+  <section class="card" style="margin-top:16px"><h2>Debts — owed and to collect</h2>
+    <p class="sub">Borrowing and lending are not income or spending — only settling one moves a wallet balance.</p>
+    <div class="grid cols-2">
+      <div><div class="label muted small">TOTAL PIUTANG (BELUM KEMBALI)</div><div class="kpi num">${fmt(debtOwedToUs)}</div><div class="hint">Money owed to the family</div></div>
+      <div><div class="label muted small">TOTAL UTANG (BELUM DIBAYAR)</div><div class="kpi num">${fmt(debtOwedByUs)}</div><div class="hint">Money the family owes</div></div>
+    </div>
+    ${debtOpen.length === 0 ? `<p class="muted" style="margin-top:12px">Nothing outstanding — every debt is settled.</p>`
+      : debtOpen.map((d) => `<div class="bill-row"><span><b>${esc(d.person)}</b><br><span class="muted small">${d.direction === "utang" ? "Utang — we owe them" : "Piutang — they owe us"}${d.due ? " · due " + fmtDate(d.due) : ""}</span></span><span class="num"><b>${fmt(d.amount)}</b></span></div>`).join("")}
+    <p class="small" style="margin-top:12px"><a href="#/debts">Open the debts page →</a></p>
+  </section>
 
   <section class="card" style="margin-top:16px"><h2>What the numbers say</h2>
     <p class="sub">Computed from this month's transactions — not written by hand</p>
