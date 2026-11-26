@@ -1,6 +1,6 @@
 # Wijaya Household Budget
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![make.fun bounty](https://img.shields.io/badge/make.fun-best--household--budget--site-orange)](https://make.fun/c/best-household-budget-site-20261126-1457)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![make.fun · best-household-budget-site-20261126-1457](https://make.fun/badge/best-household-budget-site-20261126-1457.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457) [![rank](https://make.fun/badge/best-household-budget-site-20261126-1457/zal-m10/best-household-budget-site/rank.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457) [![reward](https://make.fun/badge/best-household-budget-site-20261126-1457/zal-m10/best-household-budget-site/reward.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457)
 
 A household budget site for Keluarga Wijaya — a family of four in Jakarta —
 keeping their budget for November 2026. Built for the make.fun bounty
