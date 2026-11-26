@@ -92,6 +92,7 @@ function currentPath() {
 function render() {
   const path = currentPath();
   document.body.dataset.page = path;
+  setNavOpen(false);
   const app = document.getElementById("app");
   app.innerHTML = routes[path]() + siteFooter();
   document.querySelectorAll("nav.main a").forEach((a) => {
@@ -299,6 +300,21 @@ function wireDebts() {
   });
 }
 
+// ---- Sidebar drawer (phone): the hamburger opens it; a link, the scrim or Esc closes it. ----
+const menuBtn = document.getElementById("menu-btn");
+const scrim = document.getElementById("scrim");
+function setNavOpen(open) {
+  document.body.classList.toggle("nav-open", open);
+  scrim.hidden = !open;
+  menuBtn.setAttribute("aria-expanded", String(open));
+  menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+}
+menuBtn.addEventListener("click", () => setNavOpen(!document.body.classList.contains("nav-open")));
+scrim.addEventListener("click", () => setNavOpen(false));
+document.querySelector("nav.main").addEventListener("click", (e) => {
+  if (e.target.closest("a")) setNavOpen(false);
+});
+
 // ---- Receipt lightbox: tap a thumbnail in any row to enlarge it. ----
 function openLightbox(src, alt) {
   const box = document.getElementById("lightbox");
@@ -319,7 +335,7 @@ document.getElementById("app").addEventListener("click", (e) => {
   if (thumb) openLightbox(thumb.src, thumb.alt);
 });
 document.getElementById("lightbox").addEventListener("click", closeLightbox);
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeLightbox(); setNavOpen(false); } });
 
 function refreshList() {
   // Re-render just the page; the filter values live in txFilter, so the
