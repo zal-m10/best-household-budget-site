@@ -87,6 +87,16 @@ export const DATA = {
     { date: "2026-11-25", merchant: "Ayam Geprek Bensu", category: "dining", type: "out", amount: 207500, note: "Takeaway dinner for four" },
   ],
 
+  // Money owed and money to collect. "utang" is money the family owes
+  // someone; "piutang" is money someone owes the family. Creating one moves
+  // no wallet and counts as neither income nor spending — only settling it
+  // moves money, out of a wallet for a debt, into one for a receivable.
+  debts: [
+    { id: "d1", person: "Rina — Ibu's friend", direction: "piutang", amount: 500000, due: "2026-12-10", note: "Lent for her stall stock", status: "open" },
+    { id: "d2", person: "Om Budi — Ayah's brother", direction: "utang", amount: 1000000, due: "2026-12-20", note: "Borrowed for Dimas's school trip deposit", status: "open" },
+    { id: "d3", person: "Andi — Ayah's friend", direction: "piutang", amount: 300000, due: "2026-11-15", note: "Lent for a motorbike repair", status: "paid", settledDate: "2026-11-15", settledAccount: "Cash at home" },
+  ],
+
   // Savings goals. The saved amounts add up to the savings account balance.
   goals: [
     { id: "emergency", name: "Emergency fund", target: 15000000, saved: 4250000, note: "Six months of essentials, for rainy days" },
